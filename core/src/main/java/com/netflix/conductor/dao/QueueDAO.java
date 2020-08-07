@@ -188,4 +188,8 @@ public interface QueueDAO {
 		push(queueName, messageId, priority, postponeDurationInSeconds);
 		return true;
 	}
+
+	default boolean containsMessage(String queueName, String messageId) {
+		return true;
+	}
 }

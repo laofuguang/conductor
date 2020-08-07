@@ -23,6 +23,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import com.netflix.conductor.common.constraints.FaultInjectionInterceptor;
 import org.rarefiedredis.redis.IRedisClient;
 import org.rarefiedredis.redis.IRedisSortedSet.ZsetPair;
 import org.rarefiedredis.redis.RedisMock;
@@ -37,6 +39,7 @@ import redis.clients.jedis.params.ZAddParams;
  * @author Viren
  *
  */
+//@FaultInjectionInterceptor
 public class JedisMock extends Jedis {
 
     private IRedisClient redis;
@@ -45,7 +48,7 @@ public class JedisMock extends Jedis {
         super("");
         this.redis = new RedisMock();
     }
-    
+
     private Set<Tuple> toTupleSet(Set<ZsetPair> pairs) {
         Set<Tuple> set = new HashSet<Tuple>();
         for (ZsetPair pair : pairs) {
@@ -54,8 +57,9 @@ public class JedisMock extends Jedis {
         return set;
     }
 
+//    @FaultInjectionInterceptor
     @Override public String set(final String key, String value) {
-        try { 
+        try {
             return redis.set(key, value);
         }
         catch (Exception e) {
@@ -158,7 +162,7 @@ public class JedisMock extends Jedis {
             throw new JedisException(e);
         }
     }
-    
+
     @Override public Long move(final String key, final int dbIndex) {
         try {
             return redis.move(key, dbIndex);
@@ -722,12 +726,12 @@ public class JedisMock extends Jedis {
             throw new JedisException(e);
         }
     }
-    
+
     @Override
 	public Long zadd(String key, double score, String member, ZAddParams params) {
-		
+
 		try {
-			
+
 			if(params.getParam("xx") != null) {
 				Double existing = redis.zscore(key, member);
 				if(existing == null) {
@@ -737,12 +741,12 @@ public class JedisMock extends Jedis {
 			}else {
 				return redis.zadd(key, new ZsetPair(member, score));
 			}
-			
+
 		} catch (Exception e) {
 			throw new JedisException(e);
 		}
 	}
-	
+
 
     @Override public Long zadd(final String key, final Map<String, Double> scoreMembers) {
         try {
@@ -1076,7 +1080,7 @@ public class JedisMock extends Jedis {
             throw new JedisException(e);
         }
     }
-    
+
 	@Override
 	public ScanResult<String> sscan(String key, String cursor, ScanParams params) {
 		try {

@@ -1389,7 +1389,9 @@ public class WorkflowExecutor {
             // TODO Provide a better implementation of rollbackTasks considering all the edge cases.
             // Throwing exception to avoid workflow ending up in irrecoverable state.
             // rollbackTasks(workflow.getWorkflowId(), createdTasks);
-            throw new TerminateWorkflowException(errorMsg);
+//            throw new TerminateWorkflowException(errorMsg);
+            // TODO provide feedback to users instead of throwing an exception as above.
+            return false;
         }
     }
 
